@@ -1,10 +1,20 @@
-import axios from "axios";
+import axiosLib from "axios";
+import { getToken } from "../services/TokenService";
 
-const instance = axios.create({
-    baseURL: "http://192.168.90.41:8000/api",
+const axios = axiosLib.create({
+    baseURL: "http://192.168.90.109:8000/api",
     headers: {
         "Accept": "application/json",
     }
-});
+})
 
-export default instance;
+axios.interceptors.request.use(async(req)=>{
+    const token = await getToken();
+    if(token !== null){
+        req.headers["Authorization"] = `Bearer ${token}`; 
+    }
+
+    return req;
+})
+
+export default axios;
